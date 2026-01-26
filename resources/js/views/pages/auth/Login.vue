@@ -1,5 +1,5 @@
 <script setup>
-import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
+// import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
 import { ref } from 'vue';
 
 const email = ref('');
@@ -8,7 +8,7 @@ const checked = ref(false);
 </script>
 
 <template>
-    <FloatingConfigurator />
+    <!-- <FloatingConfigurator /> -->
     <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
         <div class="flex flex-col items-center justify-center">
             <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
@@ -50,6 +50,15 @@ const checked = ref(false);
                             <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
                         </div>
                         <Button label="Sign In" class="w-full" as="router-link" to="/"></Button>
+                        
+                        <Button
+                            label="Doesnt have an account?"
+                            severity="secondary"
+                            text
+                            class="w-full"
+                            as="router-link"
+                            to="/auth/register"
+                        />
                     </div>
                 </div>
             </div>

@@ -2,7 +2,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "concurrently \"php artisan serve --port=6014\" \"vite\"",
+        "dev": "concurrently \"php artisan serve --host=localhost --port=6014\" \"vite\"",
         "build": "vite build",
         "preview": "vite preview",
         "lint": "eslint --fix . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"

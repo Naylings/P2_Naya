@@ -134,6 +134,11 @@ const model = ref([
                         to: '/auth/login'
                     },
                     {
+                        label: 'Register',
+                        icon: 'pi pi-fw pi-sign-in',
+                        to: '/auth/register'
+                    },
+                    {
                         label: 'Error',
                         icon: 'pi pi-fw pi-times-circle',
                         to: '/auth/error'

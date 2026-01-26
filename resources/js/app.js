@@ -19,6 +19,7 @@ import { definePreset } from '@primeuix/themes';
 
 // component that still error
 import { OverlayBadge, Tooltip, TabPanels, Fluid, ToggleSwitch, Toast, Select, DatePicker, Popover, Drawer, Step, ConfirmPopup, StepList, Tab, TabList, Tabs, AccordionHeader, AccordionContent, AccordionPanel } from 'primevue';
+// import Tooltip from 'primevue/tooltip';
 
 const app = createApp(App);
 
@@ -67,6 +68,8 @@ app.use(ToastService);
 app.use(ConfirmationService);
 
 app.directive('styleclass', StyleClass);
+app.directive('tooltip', Tooltip);
+
 
 // component that still error
 app.component('Fluid', Fluid);
