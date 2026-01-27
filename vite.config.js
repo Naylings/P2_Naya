@@ -5,14 +5,14 @@ import Components from "unplugin-vue-components/vite";
 import { PrimeVueResolver } from "unplugin-vue-components/resolvers";
 import tailwindcss from "@tailwindcss/vite";
 
-import { fileURLToPath, URL } from 'node:url';
+import { fileURLToPath, URL } from "node:url";
 
 export default defineConfig({
   plugins: [
     tailwindcss(),
-        Components({
-        resolvers: [PrimeVueResolver()],
-        dts: "resources/js/components.d.ts", // optional
+    Components({
+      resolvers: [PrimeVueResolver()],
+      dts: "resources/js/components.d.ts", // optional
     }),
     laravel({
       input: ["resources/js/app.js"],
@@ -33,6 +33,14 @@ export default defineConfig({
       scss: {
         api: "modern-compiler",
       },
+    },
+  },
+  server: {
+    host: "0.0.0.0",
+    port: 5173,
+    strictPort: true,
+    hmr: {
+      host: "192.168.9.40",
     },
   },
 });
