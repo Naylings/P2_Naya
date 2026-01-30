@@ -2,3 +2,46 @@
 @use 'primeicons/primeicons.css';
 @use '@/assets/layout/layout.scss';
 @use '@/assets/demo/demo.scss';
+
+@media print {
+  /* sembunyikan seluruh layout */
+  .layout-wrapper,
+  .layout-wrapper * {
+    visibility: hidden;
+  }
+
+  /* tampilkan hanya print area */
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    inset: 0;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 2cm;
+
+    background: white;
+    box-shadow: none;
+    border: none;
+
+    font-family: "Times New Roman", serif;
+    font-size: 12pt;
+    line-height: 1.6;
+  }
+
+  /* paksa matikan layout sakai */
+  .layout-topbar,
+  .layout-sidebar,
+  .layout-footer,
+  .layout-mask {
+    display: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
