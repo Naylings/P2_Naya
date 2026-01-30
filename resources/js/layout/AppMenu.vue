@@ -10,6 +10,11 @@ const model = ref([
                 label: 'Dashboard',
                 icon: 'pi pi-fw pi-home',
                 to: '/'
+            },
+            {
+                label: 'Form Pdf',
+                icon: 'pi pi-fw pi-home',
+                to: '/formpdf'
             }
         ]
     },

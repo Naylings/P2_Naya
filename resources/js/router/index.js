@@ -15,6 +15,12 @@ const router = createRouter({
                     meta: { title: 'Dashboard' }
                 },
                 {
+                    path: '/formpdf',
+                    name: 'pdfForm',
+                    component: () => import('@/views/admin/pdf/PdfForm.vue'),
+                    meta: { title: 'Form PDF' }
+                },
+                {
                     path: '/uikit/formlayout',
                     name: 'formlayout',
                     component: () => import('@/views/uikit/FormLayout.vue'),
