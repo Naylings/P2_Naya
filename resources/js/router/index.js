@@ -9,13 +9,13 @@ const router = createRouter({
             component: AppLayout,
             children: [
                 {
-                    path: '/',
+                    path: '/home',
                     name: 'dashboard',
                     component: () => import('@/views/Dashboard.vue'),
                     meta: { title: 'Dashboard' }
                 },
                 {
-                    path: '/formpdf',
+                    path: '/',
                     name: 'pdfForm',
                     component: () => import('@/views/admin/pdf/PdfForm.vue'),
                     meta: { title: 'Form PDF' }
