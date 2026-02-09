@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { PdfModel } from "./PdfForm.vue";
+import type { PdfModel } from "./PdfForm.vue";
 
 const props = defineProps<{
   model: PdfModel;
 }>();
 
 const emit = defineEmits(["print"]);
-
 
 function clearPdf() {
   props.model.city = null;

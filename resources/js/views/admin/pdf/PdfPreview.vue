@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { PdfModel } from "./PdfForm.vue";
+import type { PdfModel } from "./PdfForm.vue";
 
 const props = defineProps<{ data: PdfModel }>();
 

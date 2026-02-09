@@ -15,7 +15,7 @@ export default defineConfig({
       dts: "resources/js/components.d.ts", // optional
     }),
     laravel({
-      input: ["resources/js/app.js"],
+      input: ["resources/js/app.ts"],
       refresh: true,
     }),
     vue(),
@@ -38,6 +38,6 @@ export default defineConfig({
   server: {
     host: "localhost",
     port: 5173,
-    strictPort: true
-  }
+    strictPort: true,
+  },
 });

@@ -1,10 +1,26 @@
 <script setup>
 // import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
+import { login } from "@/service/auth";
+import { useRouter } from 'vue-router';
 import { ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
+
+const router = useRouter();
 
 const email = ref('');
 const password = ref('');
-const checked = ref(false);
+
+const submit = async () => {
+    try {
+      const response = await login(email.value, password.value);
+    router.push({ name: 'dashboard' });
+    } catch (error) {
+      toast.add({ severity: 'error', summary: 'Error Message', detail: 'Message Detail', life: 3000 });
+  }
+};
+
 </script>
 
 <template>
@@ -42,23 +58,9 @@ const checked = ref(false);
                         <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
                         <Password id="password1" v-model="password" placeholder="Password" :toggleMask="true" class="mb-4" fluid :feedback="false"></Password>
 
-                        <div class="flex items-center justify-between mt-2 mb-8 gap-8">
-                            <div class="flex items-center">
-                                <Checkbox v-model="checked" id="rememberme1" binary class="mr-2"></Checkbox>
-                                <label for="rememberme1">Remember me</label>
-                            </div>
-                            <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
-                        </div>
-                        <Button label="Sign In" class="w-full" as="router-link" to="/"></Button>
                         
-                        <Button
-                            label="Doesnt have an account?"
-                            severity="secondary"
-                            text
-                            class="w-full"
-                            as="router-link"
-                            to="/auth/register"
-                        />
+                        <Button label="Sign In" class="w-full" @click="submit" ></Button>
+                       
                     </div>
                 </div>
             </div>
