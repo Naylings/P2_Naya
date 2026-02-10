@@ -1,6 +1,7 @@
 // import AppLayout from "@/layout/AppLayout.vue";
 
 import AppLayout from "@/layout/AppLayout.vue";
+import { useAuthStore } from "@/stores/auth";
 import {
   createRouter,
   createWebHistory,
@@ -14,16 +15,22 @@ const routes: Array<RouteRecordRaw> = [
     component: AppLayout,
     children: [
       {
-        path: "/home",
+        path: "/",
         name: "dashboard",
         component: () => import("@/views/Dashboard.vue"),
         meta: { title: "Dashboard" },
       },
       {
-        path: "/",
+        path: "/pdf",
         name: "pdfForm",
         component: () => import("@/views/admin/pdf/PdfForm.vue"),
-        meta: { title: "Form PDF" },
+        meta: { title: "Form PDF", roles: ["administrator"] },
+      },
+      {
+        path: "/users",
+        name: "users",
+        component: () => import("@/views/admin/users/Index.vue"),
+        meta: { title: "Users" },
       },
       {
         path: "/uikit/formlayout",
@@ -180,18 +187,39 @@ const router = createRouter({
 
 const APP_NAME = "Naya";
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const pageTitle = to.meta?.title as string;
-    document.title = pageTitle ? `${APP_NAME} | ${pageTitle}` : APP_NAME;
-    
-    const token = localStorage.getItem("token");
-    if (to.meta.requiresAuth && !token) {
+  document.title = pageTitle ? `${APP_NAME} | ${pageTitle}` : APP_NAME;
+
+  const token = localStorage.getItem("token");
+  const auth = useAuthStore();
+
+  if (to.meta.requiresAuth && !token) {
+    return { name: "login" };
+  }
+
+  if (token && !auth.user) {
+    try {
+      await auth.fetchMe();
+    } catch {
+      auth.clear();
+      localStorage.removeItem("token");
       return { name: "login" };
     }
-    
-    if ((to.name === "login" || to.name === "register") && token) {
-      return { name: "dashboard" };
+  }
+
+  const allowedRoles = to.meta.roles as string[] | undefined;
+
+  if (allowedRoles?.length && auth.user) {
+    if (!allowedRoles.includes(auth.user.role)) {
+      return { name: "accessDenied" };
     }
+  }
+
+  if ((to.name === "login" || to.name === "register") && token) {
+    return { name: "dashboard" };
+  }
 });
+
 
 export default router;

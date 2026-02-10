@@ -19,6 +19,7 @@ import { definePreset } from '@primeuix/themes';
 
 // component that still error
 import { OverlayBadge, Tooltip, TabPanels, Fluid, ToggleSwitch, Toast, Select, DatePicker, Popover, Drawer, Step, ConfirmPopup, StepList, Tab, TabList, Tabs, AccordionHeader, AccordionContent, AccordionPanel } from 'primevue';
+import { createPinia } from 'pinia';
 // import Tooltip from 'primevue/tooltip';
 
 const app = createApp(App);
@@ -55,6 +56,9 @@ const CustomLara = definePreset(Lara, {
     }
 });
 
+const pinia = createPinia();
+
+app.use(pinia)
 app.use(router);
 app.use(PrimeVue, {
     theme: {

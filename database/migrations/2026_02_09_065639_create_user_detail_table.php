@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('user_detail', function (Blueprint $table) {
             $table->id();
             $table->string('nip')->nullable();
+            $table->string('name')->nullable();
             $table->string('no_hp')->nullable();
             $table->string('address')->nullable();
             $table->date('birth_date')->nullable();

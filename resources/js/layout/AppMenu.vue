@@ -4,17 +4,22 @@ import AppMenuItem from './AppMenuItem.vue';
 
 const model = ref([
     {
-        label: 'Home',
+        label: 'Main',
         items: [
             {
                 label: 'Dashboard',
                 icon: 'pi pi-fw pi-home',
-                to: '/home'
+                to: '/'
+            },
+            {
+                label: 'Data User',
+                icon: 'pi pi-fw pi-users',
+                to: '/users'
             },
             {
                 label: 'Form Pdf',
-                icon: 'pi pi-fw pi-home',
-                to: '/'
+                icon: 'pi pi-fw pi-file',
+                to: '/pdf'
             }
         ]
     },
