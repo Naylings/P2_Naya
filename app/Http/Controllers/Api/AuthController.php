@@ -25,9 +25,20 @@ class AuthController extends Controller
                    ], 401);
                }
 
+               $user = auth('api')->user()->load([
+                   'jabatan',
+                   'detail'
+               ]);
+               
+               if (!$user->isActive()) {
+                   auth('api')->logout();
+                   return response()->json(['message' => 'User is inactive'], 403);
+               }
+
+
                return response()->json([
                       'token' => $token,
-                      'user' => auth('api')->user()
+                      'user' => $user
                   ]);
     }
 
@@ -43,18 +54,18 @@ class AuthController extends Controller
         'jabatan:id,name,slug',
         'detail'
         ]);
-        
+
         return response()->json([
             'id' => $user->id,
             'email' => $user->email,
-    
+
             // role dari jabatan
             'role' => $user->jabatan->slug,
             'jabatan' => $user->jabatan->name,
-    
+
             // detail tambahan
             'detail' => $user->detail,
-            
+
         ]);
     }
 }

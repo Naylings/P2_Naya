@@ -15,11 +15,31 @@ const password = ref('');
 const submit = async () => {
     try {
       const response = await login(email.value, password.value);
-    router.push({ name: 'dashboard' });
+      
+      // Toast success
+      toast.add({ 
+        severity: 'success', 
+        summary: 'Login Successful', 
+        detail: 'Welcome back!', 
+        life: 3000 
+      });
+      
+      // Redirect setelah delay sedikit agar toast terlihat
+      setTimeout(() => {
+        router.push({ name: 'dashboard' });
+      }, 500);
+      
     } catch (error) {
-      toast.add({ severity: 'error', summary: 'Error Message', detail: 'Message Detail', life: 3000 });
-  }
+      // Toast error dengan pesan yang lebih detail
+      toast.add({ 
+        severity: 'error', 
+        summary: 'Login Failed', 
+        detail: error.response?.data?.message || 'Invalid email or password', 
+        life: 3000 
+      });
+    }
 };
+
 
 </script>
 
@@ -56,7 +76,7 @@ const submit = async () => {
                         <InputText id="email1" type="text" placeholder="Email address" class="w-full md:w-[30rem] mb-8" v-model="email" />
 
                         <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                        <Password id="password1" v-model="password" placeholder="Password" :toggleMask="true" class="mb-4" fluid :feedback="false"></Password>
+                        <Password id="password1" v-model="password" placeholder="Password" :toggleMask="true" class="mb-4" fluid :feedback="false"/>
 
                         
                         <Button label="Sign In" class="w-full" @click="submit" ></Button>

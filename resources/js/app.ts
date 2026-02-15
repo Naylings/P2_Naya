@@ -84,7 +84,6 @@ app.component('DatePicker', DatePicker);
 app.component('ToggleSwitch', ToggleSwitch);
 app.component('Popover', Popover);
 app.component('Drawer', Drawer);
-app.directive('tooltip', Tooltip);
 app.component('OverlayBadge', OverlayBadge);
 app.component('Step', Step);
 app.component('ConfirmPopup', ConfirmPopup);

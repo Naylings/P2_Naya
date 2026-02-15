@@ -12,15 +12,23 @@ class User extends Authenticatable implements JWTSubject
 {
 
     protected $fillable = [
-        'name',
         'email',
         'password',
+        'jabatan_id'
     ];
 
     protected $hidden = [
         'password',
     ];
     
+    public function isActive()
+    {
+        if ($this->jabatan->slug === 'administrator') {
+            return true;
+        }
+    
+        return $this->detail && $this->detail->status === 'active';
+    }
     
     public function jabatan()
     {

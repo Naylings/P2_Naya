@@ -2,12 +2,14 @@
 import { useLayout } from "@/layout/composables/layout";
 import { ref } from "vue";
 import { logout } from "@/service/auth";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
+import { useToast } from "primevue/usetoast";
 
 const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
 
 const op = ref(null);
-const router = useRouter()
+const router = useRouter();
+const toast = useToast();
 
 function userMenu(event) {
   op.value.toggle(event);
@@ -17,9 +19,27 @@ const handleLogout = async () => {
   try {
     await logout(); // call API logout (invalidate JWT)
     op.value?.hide(); // tutup popover
-    router.push({ name: 'login' });
+
+    toast.add({
+      severity: "success",
+      summary: "Logout Successful",
+      detail: "You have been logged out successfully",
+      life: 3000,
+    });
+
+    // Delay redirect sedikit agar toast terlihat
+    setTimeout(() => {
+      router.push({ name: "login" });
+    }, 500);
   } catch (e) {
     console.error("Logout failed", e);
+
+    toast.add({
+      severity: "error",
+      summary: "Logout Failed",
+      detail: "An error occurred while logging out",
+      life: 3000,
+    });
   }
 };
 </script>

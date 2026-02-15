@@ -11,7 +11,7 @@ class Jabatan extends Model
     
     public function jabatan()
     {
-        return $this->belongsTo(Jabatan::class);
+        return $this->hasMany(Jabatan::class);
     }
 
     public function detail()
