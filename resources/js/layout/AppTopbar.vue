@@ -1,7 +1,7 @@
 <script setup>
 import { useLayout } from "@/layout/composables/layout";
 import { ref } from "vue";
-import { logout } from "@/service/auth";
+import { logout } from "@/service/authService";
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast";
 

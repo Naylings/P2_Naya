@@ -17,6 +17,11 @@ const model = ref([
                 to: '/users'
             },
             {
+                label: 'Rukun',
+                icon: 'pi pi-fw pi-users',
+                to: '/rukun'
+            },
+            {
                 label: 'Form Pdf',
                 icon: 'pi pi-fw pi-file',
                 to: '/pdf'

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->enum('type',['RT','RW']);
             $table->string('no');
             $table->timestamps();
+            $table->unique(['type', 'no']);
         });
     }
 

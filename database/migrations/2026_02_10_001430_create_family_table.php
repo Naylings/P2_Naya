@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('family', function (Blueprint $table) {
             $table->id();
             $table->string('no_kk')->unique();
-            $table->foreignId('rt_id')->constrained('rukun');
-            $table->foreignId('rw_id')->constrained('rukun');
+            $table->foreignId('rt_id')->constrained('rukun')->restrictOnDelete();
+            $table->foreignId('rw_id')->constrained('rukun')->restrictOnDelete();
             $table->text('address');
             $table->timestamps();
         });

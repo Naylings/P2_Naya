@@ -33,6 +33,12 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: "Users" },
       },
       {
+        path: "/rukun",
+        name: "rukun",
+        component: () => import("@/views/admin/rukun/Index.vue"),
+        meta: { title: "Rukun", roles: ["administrator"] },
+      },
+      {
         path: "/uikit/formlayout",
         name: "formlayout",
         component: () => import("@/views/uikit/FormLayout.vue"),

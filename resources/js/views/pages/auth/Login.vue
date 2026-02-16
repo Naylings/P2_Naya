@@ -1,6 +1,6 @@
 <script setup>
 // import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
-import { login } from "@/service/auth";
+import { login } from "@/service/authService";
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';

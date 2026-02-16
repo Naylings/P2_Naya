@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\RukunController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\JabatanController;
@@ -28,4 +29,10 @@ Route::middleware('auth:api')->prefix('users')->group(function () {
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/jabatan', [JabatanController::class, 'index']);
+});
+
+Route::middleware('auth:api')->prefix('rukun')->group(function () {
+    Route::get('/', [RukunController::class, 'index']);
+    Route::post('/', [RukunController::class, 'store']);
+    Route::post('/{id}', [RukunController::class, 'destroy']);
 });
