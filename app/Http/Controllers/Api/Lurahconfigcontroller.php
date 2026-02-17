@@ -69,7 +69,9 @@ class LurahConfigController extends Controller
             $data = $request->only(['name', 'province', 'city', 'district', 'pos_code']);
 
             // Handle logo upload
-            if ($request->hasFile('logo')) {
+            $logoFile = $request->file('logo');
+            if ($logoFile !== null && $logoFile->isValid() && !empty($logoFile->getClientOriginalName())) {
+
                 $existingConfig = LurahConfig::getConfig();
 
                 // Hapus logo lama jika ada
