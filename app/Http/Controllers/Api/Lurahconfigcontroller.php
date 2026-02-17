@@ -80,7 +80,7 @@ class LurahConfigController extends Controller
                     Storage::disk('public')->delete($existingConfig->logo);
                 }
 
-  $extension = $logoFile->getClientOriginalExtension() ?: 'jpg';
+                $extension = $logoFile->getClientOriginalExtension() ?: 'jpg';
                 $filename  = 'logo_' . time() . '_' . Str::random(8) . '.' . $extension;
                 $directory = storage_path('app/public/config/logo');
 
