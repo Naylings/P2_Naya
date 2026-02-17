@@ -111,6 +111,44 @@ async function handleSave() {
 }
 
 onBeforeMount(() => loadConfig());
+
+
+function onFileInputChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+
+  // Validasi ukuran
+  if (file.size > 2 * 1024 * 1024) {
+    toast.add({ severity: 'warn', summary: 'File terlalu besar', detail: 'Ukuran logo maksimal 2MB', life: 3000 });
+    input.value = '';
+    return;
+  }
+
+  // Validasi tipe
+  const allowed = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/jpg'];
+  if (!allowed.includes(file.type)) {
+    toast.add({ severity: 'warn', summary: 'Format tidak didukung', detail: 'Gunakan JPG, PNG, atau SVG', life: 3000 });
+    input.value = '';
+    return;
+  }
+
+  logoFile.value = file;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    logoPreview.value = e.target?.result as string;
+  };
+  reader.readAsDataURL(file);
+
+  // Reset input agar bisa pilih file yang sama lagi
+  input.value = '';
+}
+
+
+function triggerFileInput() {
+  fileInputRef.value?.click();
+}
 </script>
 
 <template>
@@ -237,17 +275,37 @@ onBeforeMount(() => loadConfig());
           </div>
         </div>
 
-        <!-- Upload -->
-        <FileUpload
-          mode="basic"
-          accept="image/*"
-          :maxFileSize="2097152"
-          chooseLabel="Pilih Logo"
-          :auto="false"
-          @select="onLogoSelect"
-          @clear="onLogoClear"
-          class="w-full"
+        <input
+          ref="fileInputRef"
+          type="file"
+          accept="image/jpeg,image/jpg,image/png,image/svg+xml"
+          class="hidden"
+          @change="onFileInputChange"
         />
+
+        <Button
+          icon="pi pi-upload"
+          :label="logoFile ? logoFile.name : 'Pilih Logo'"
+          severity="secondary"
+          outlined
+          class="w-full"
+          @click="triggerFileInput"
+        />
+
+        <p v-if="logoFile" class="text-xs text-green-600 text-center">
+          {{ (logoFile.size / 1024).toFixed(1) }} KB — siap diupload saat simpan
+        </p>
+
+        <Button
+          v-if="logoPreview"
+          icon="pi pi-times"
+          label="Batalkan"
+          severity="secondary"
+          outlined
+          size="small"
+          @click="onLogoClear"
+        />
+
 
         <!-- Hapus logo yang sudah ada -->
         <Button
