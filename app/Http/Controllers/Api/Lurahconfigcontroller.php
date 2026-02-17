@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\LurahConfig;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class LurahConfigController extends Controller
 {
@@ -69,7 +70,9 @@ class LurahConfigController extends Controller
             $data = $request->only(['name', 'province', 'city', 'district', 'pos_code']);
 
             // Handle logo upload
-            if ($request->hasFile('logo')) {
+            $logoFile = $request->file('logo');
+            if ($logoFile !== null && $logoFile->isValid() && !empty($logoFile->getClientOriginalName())) {
+
                 $existingConfig = LurahConfig::getConfig();
 
                 // Hapus logo lama jika ada
@@ -77,8 +80,20 @@ class LurahConfigController extends Controller
                     Storage::disk('public')->delete($existingConfig->logo);
                 }
 
-                $data['logo'] = $request->file('logo')->store('config/logo', 'public');
-            }
+  $extension = $logoFile->getClientOriginalExtension() ?: 'jpg';
+                $filename  = 'logo_' . time() . '_' . Str::random(8) . '.' . $extension;
+                $directory = storage_path('app/public/config/logo');
+
+                // Pastikan direktori ada
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+
+                // Move file dari temp ke storage
+                $logoFile->move($directory, $filename);
+
+                // Simpan path relatif (untuk Storage::url())
+                $data['logo'] = 'config/logo/' . $filename;            }
 
             $config = LurahConfig::saveConfig($data);
 
