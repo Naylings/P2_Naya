@@ -13,13 +13,28 @@ const model = ref([
             },
             {
                 label: 'Data User',
-                icon: 'pi pi-fw pi-users',
+                icon: 'pi pi-fw pi-id-card',
                 to: '/users'
             },
             {
                 label: 'Rukun',
-                icon: 'pi pi-fw pi-users',
+                icon: 'pi pi-fw pi-sitemap',
                 to: '/rukun'
+            },
+            {
+                label: 'Keluarga',
+                icon: 'pi pi-fw pi-heart',
+                to: '/family'
+            },
+            {
+                label: 'Warga',
+                icon: 'pi pi-fw pi-users',
+                to: '/warga'
+            },
+            {
+                label: 'Config',
+                icon: 'pi pi-fw pi-cog',
+                to: '/config'
             },
             {
                 label: 'Form Pdf',

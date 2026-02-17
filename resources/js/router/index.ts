@@ -39,6 +39,24 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: "Rukun", roles: ["administrator"] },
       },
       {
+        path: "/family",
+        name: "family",
+        component: () => import("@/views/admin/family/Index.vue"),
+        meta: { title: "Keluarga", roles: ["administrator"] },
+      },
+      {
+        path: "/warga",
+        name: "warga",
+        component: () => import("@/views/admin/warga/Index.vue"),
+        meta: { title: "Warga", roles: ["administrator"] },
+      },
+      {
+        path: "/config",
+        name: "config",
+        component: () => import("@/views/admin/config/Index.vue"),
+        meta: { title: "App Configuration", roles: ["administrator"] },
+      },
+      {
         path: "/uikit/formlayout",
         name: "formlayout",
         component: () => import("@/views/uikit/FormLayout.vue"),
@@ -184,6 +202,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/pages/auth/Error.vue"),
     meta: { title: "Error" },
   },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: { name: "notfound" },
+  },
 ];
 
 const router = createRouter({
@@ -194,36 +216,50 @@ const router = createRouter({
 const APP_NAME = "Naya";
 
 router.beforeEach(async (to) => {
-  const pageTitle = to.meta?.title as string;
-  document.title = pageTitle ? `${APP_NAME} | ${pageTitle}` : APP_NAME;
+  try {
+    const pageTitle = to.meta?.title as string;
+    document.title = pageTitle ? `${APP_NAME} | ${pageTitle}` : APP_NAME;
 
-  const token = localStorage.getItem("token");
-  const auth = useAuthStore();
+    const token = localStorage.getItem("token");
+    const auth = useAuthStore();
 
-  if (to.meta.requiresAuth && !token) {
-    return { name: "login" };
-  }
+    // Jika route tidak ada
+    if (to.matched.length === 0) {
+      return { name: "notfound" };
+    }
 
-  if (token && !auth.user) {
-    try {
-      await auth.fetchMe();
-    } catch {
-      auth.clear();
-      localStorage.removeItem("token");
+    // Jika butuh auth tapi tidak ada token
+    if (to.meta.requiresAuth && !token) {
       return { name: "login" };
     }
-  }
 
-  const allowedRoles = to.meta.roles as string[] | undefined;
-
-  if (allowedRoles?.length && auth.user) {
-    if (!allowedRoles.includes(auth.user.role)) {
-      return { name: "accessDenied" };
+    // Jika ada token tapi user belum di-load
+    if (token && !auth.user) {
+      try {
+        await auth.fetchMe();
+      } catch (error) {
+        auth.clear();
+        localStorage.removeItem("token");
+        return { name: "login" };
+      }
     }
-  }
 
-  if ((to.name === "login" || to.name === "register") && token) {
-    return { name: "dashboard" };
+    // Role-based access
+    const allowedRoles = to.meta.roles as string[] | undefined;
+
+    if (allowedRoles?.length) {
+      if (!auth.user || !allowedRoles.includes(auth.user.role)) {
+        return { name: "accessDenied" };
+      }
+    }
+
+    // Jika sudah login lalu buka login/register
+    if ((to.name === "login" || to.name === "register") && token) {
+      return { name: "dashboard" };
+    }
+
+  } catch (e) {
+    return { name: "error" };
   }
 });
 
