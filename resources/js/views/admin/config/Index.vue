@@ -10,7 +10,6 @@ const loading = ref(false);
 const loadingSave = ref(false);
 const config = ref<LurahConfig | null>(null);
 
-// Form fields
 const form = ref({
   name: '',
   province: '',
@@ -48,18 +47,47 @@ async function loadConfig() {
 }
 
 // ===================== LOGO =====================
-function onLogoSelect(event: any) {
-  const file: File = event.files[0];
+
+/**
+ * Pakai input file biasa — lebih reliable di production build
+ * daripada FileUpload PrimeVue yang event-nya bisa beda
+ */
+const fileInputRef = ref<HTMLInputElement | null>(null);
+
+function triggerFileInput() {
+  fileInputRef.value?.click();
+}
+
+function onFileInputChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
   if (!file) return;
+
+  // Validasi ukuran
+  if (file.size > 2 * 1024 * 1024) {
+    toast.add({ severity: 'warn', summary: 'File terlalu besar', detail: 'Ukuran logo maksimal 2MB', life: 3000 });
+    input.value = '';
+    return;
+  }
+
+  // Validasi tipe
+  const allowed = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/jpg'];
+  if (!allowed.includes(file.type)) {
+    toast.add({ severity: 'warn', summary: 'Format tidak didukung', detail: 'Gunakan JPG, PNG, atau SVG', life: 3000 });
+    input.value = '';
+    return;
+  }
 
   logoFile.value = file;
 
-  // Preview
   const reader = new FileReader();
   reader.onload = (e) => {
     logoPreview.value = e.target?.result as string;
   };
   reader.readAsDataURL(file);
+
+  // Reset input agar bisa pilih file yang sama lagi
+  input.value = '';
 }
 
 function onLogoClear() {
@@ -91,7 +119,7 @@ async function handleSave() {
     formData.append('pos_code', form.value.pos_code);
 
     if (logoFile.value) {
-      formData.append('logo', logoFile.value);
+      formData.append('logo', logoFile.value, logoFile.value.name);
     }
 
     const response = await ConfigService.save(formData);
@@ -103,7 +131,10 @@ async function handleSave() {
 
     toast.add({ severity: 'success', summary: 'Berhasil', detail: 'Konfigurasi berhasil disimpan', life: 3000 });
   } catch (error: any) {
-    const message = error?.response?.data?.message || 'Gagal menyimpan konfigurasi';
+    const errors = error?.response?.data?.errors;
+    const message = errors
+      ? Object.values(errors).flat().join(', ')
+      : error?.response?.data?.message || 'Gagal menyimpan konfigurasi';
     toast.add({ severity: 'error', summary: 'Gagal', detail: message, life: 4000 });
   } finally {
     loadingSave.value = false;
@@ -158,49 +189,31 @@ onBeforeMount(() => loadConfig());
             <label class="font-semibold text-sm">
               Provinsi <span class="text-red-500">*</span>
             </label>
-            <InputText
-              v-model="form.province"
-              placeholder="Contoh: Jawa Barat"
-              class="w-full"
-            />
+            <InputText v-model="form.province" placeholder="Contoh: Jawa Barat" class="w-full" />
           </div>
 
           <div class="flex flex-col gap-2">
             <label class="font-semibold text-sm">
               Kota / Kabupaten <span class="text-red-500">*</span>
             </label>
-            <InputText
-              v-model="form.city"
-              placeholder="Contoh: Kota Bandung"
-              class="w-full"
-            />
+            <InputText v-model="form.city" placeholder="Contoh: Kota Bandung" class="w-full" />
           </div>
 
           <div class="flex flex-col gap-2">
             <label class="font-semibold text-sm">
               Kecamatan <span class="text-red-500">*</span>
             </label>
-            <InputText
-              v-model="form.district"
-              placeholder="Contoh: Kecamatan Coblong"
-              class="w-full"
-            />
+            <InputText v-model="form.district" placeholder="Contoh: Kecamatan Coblong" class="w-full" />
           </div>
 
           <div class="flex flex-col gap-2">
             <label class="font-semibold text-sm">
               Kode Pos <span class="text-red-500">*</span>
             </label>
-            <InputText
-              v-model="form.pos_code"
-              placeholder="Contoh: 40132"
-              maxlength="10"
-              class="w-full"
-            />
+            <InputText v-model="form.pos_code" placeholder="Contoh: 40132" maxlength="10" class="w-full" />
           </div>
         </div>
 
-        <!-- Save button -->
         <div class="flex justify-end pt-2">
           <Button
             icon="pi pi-save"
@@ -216,15 +229,11 @@ onBeforeMount(() => loadConfig());
       <div class="flex flex-col gap-4">
         <div>
           <label class="font-semibold text-sm block mb-2">Logo Kelurahan</label>
-          <p class="text-xs text-gray-400 mb-3">
-            Format: JPG, PNG, SVG. Maks. 2MB.
-          </p>
+          <p class="text-xs text-gray-400 mb-3">Format: JPG, PNG, SVG. Maks. 2MB.</p>
         </div>
 
-        <!-- Preview logo -->
-        <div
-          class="w-full aspect-square max-w-45 mx-auto rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50"
-        >
+        <!-- Preview -->
+        <div class="w-full aspect-square max-w-45 mx-auto rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50">
           <img
             v-if="logoPreview || existingLogo"
             :src="logoPreview ?? existingLogo ?? ''"
@@ -237,16 +246,39 @@ onBeforeMount(() => loadConfig());
           </div>
         </div>
 
-        <!-- Upload -->
-        <FileUpload
-          mode="basic"
-          accept="image/*"
-          :maxFileSize="2097152"
-          chooseLabel="Pilih Logo"
-          :auto="false"
-          @select="onLogoSelect"
-          @clear="onLogoClear"
+        <!-- Hidden native file input — lebih reliable di production -->
+        <input
+          ref="fileInputRef"
+          type="file"
+          accept="image/jpeg,image/jpg,image/png,image/svg+xml"
+          class="hidden"
+          @change="onFileInputChange"
+        />
+
+        <!-- Tombol pilih file -->
+        <Button
+          icon="pi pi-upload"
+          :label="logoFile ? logoFile.name : 'Pilih Logo'"
+          severity="secondary"
+          outlined
           class="w-full"
+          @click="triggerFileInput"
+        />
+
+        <!-- Info ukuran file -->
+        <p v-if="logoFile" class="text-xs text-green-600 text-center">
+          {{ (logoFile.size / 1024).toFixed(1) }} KB — siap diupload saat simpan
+        </p>
+
+        <!-- Batalkan pilihan baru -->
+        <Button
+          v-if="logoPreview"
+          icon="pi pi-times"
+          label="Batalkan"
+          severity="secondary"
+          outlined
+          size="small"
+          @click="onLogoClear"
         />
 
         <!-- Hapus logo yang sudah ada -->
@@ -258,17 +290,6 @@ onBeforeMount(() => loadConfig());
           outlined
           size="small"
           @click="handleDeleteLogo"
-        />
-
-        <!-- Batalkan pilihan baru -->
-        <Button
-          v-if="logoPreview"
-          icon="pi pi-times"
-          label="Batalkan"
-          severity="secondary"
-          outlined
-          size="small"
-          @click="onLogoClear"
         />
       </div>
 
