@@ -8,6 +8,8 @@ export interface LurahConfig {
   district: string;
   pos_code: string;
   logo: string | null;
+  address: string | null;
+  contact: string | null;
   updated_at: string;
 }
 

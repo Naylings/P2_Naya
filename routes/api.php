@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\JabatanController;
 use App\Http\Controllers\Api\FamilyController;
 use App\Http\Controllers\Api\WargaController;
+use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\LurahConfigController;
 use Illuminate\Support\Facades\Route;
 
@@ -80,6 +81,18 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/', [LurahConfigController::class, 'save']);
         Route::delete('/logo', [LurahConfigController::class, 'deleteLogo']);
     });
+    
+    
+    Route::prefix('doc')->group(function () {
+        Route::get('/',                 [DocumentController::class, 'index']);
+        Route::post('/',                [DocumentController::class, 'store']);
+        Route::get('count',             [DocumentController::class, 'count']);       // ← HARUS sebelum {log}
+        Route::get('{log}/stream',      [DocumentController::class, 'stream']);
+        Route::post('{log}/regenerate', [DocumentController::class, 'regenerate']);
+        Route::delete('{log}',          [DocumentController::class, 'destroy']);
+    });
+
+
 });
 
 Route::prefix('config')->group(function () {

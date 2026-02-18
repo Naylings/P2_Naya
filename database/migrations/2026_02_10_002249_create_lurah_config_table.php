@@ -15,6 +15,8 @@ return new class extends Migration
             $table->string('city');
             $table->string('district');
             $table->string('pos_code');
+            $table->string('address');
+            $table->string('contact');
             $table->string('logo')->nullable();
             $table->timestamps();
         });

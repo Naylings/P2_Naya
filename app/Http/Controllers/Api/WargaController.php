@@ -257,34 +257,25 @@ class WargaController extends Controller
         return response()->download($filePath, 'template_import_warga.xlsx');
     }
 
+    
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
-        ], [
-            'file.required' => 'File wajib dipilih',
-            'file.mimes'    => 'File harus berformat xlsx, xls, atau csv',
-            'file.max'      => 'Ukuran file maksimal 5MB',
+            'file' => 'required|mimes:xlsx,xls,csv'
         ]);
-
+    
         try {
-            $import = new WargaImport();
-            Excel::import($import, $request->file('file'));
-
-            $successCount = count($import->successes);
-            $errorCount   = count($import->errors);
-
+            Excel::import(new WargaImport, $request->file('file'));
+    
             return response()->json([
-                'success'       => true,
-                'message'       => "Import selesai: {$successCount} berhasil, {$errorCount} gagal.",
-                'success_count' => $successCount,
-                'error_count'   => $errorCount,
-                'errors'        => $import->errors,
+                'success' => true,
+                'message' => 'Import berhasil'
             ]);
+    
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal memproses file: ' . $e->getMessage(),
+                'message' => $e->getMessage()
             ], 500);
         }
     }

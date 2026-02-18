@@ -15,6 +15,8 @@ class LurahConfig extends Model
         'district',
         'pos_code',
         'logo',
+        'address',
+        'contact'
     ];
 
     /**

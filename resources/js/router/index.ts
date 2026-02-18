@@ -49,7 +49,14 @@ const routes: Array<RouteRecordRaw> = [
         name: "warga",
         component: () => import("@/views/admin/warga/Index.vue"),
         meta: { title: "Warga", roles: ["administrator"] },
-      },
+        },
+      
+        {
+          path: '/doc/:type',
+          name: 'doc',
+          component: () => import('@/views/admin/doc/DocLayout.vue'),
+          meta: { title: 'Surat', roles: ['administrator'] },
+        },
       {
         path: "/config",
         name: "config",

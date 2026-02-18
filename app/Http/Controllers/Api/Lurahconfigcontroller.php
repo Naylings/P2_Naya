@@ -38,6 +38,8 @@ class LurahConfigController extends Controller
                 'logo'     => $config->logo
                     ? Storage::url($config->logo)
                     : null,
+                    'address' => $config->address,
+                    'contact' => $config->contact,
                 'updated_at' => $config->updated_at?->format('d M Y, H:i'),
             ],
         ]);
@@ -56,18 +58,22 @@ class LurahConfigController extends Controller
             'district' => 'required|string|max:255',
             'pos_code' => 'required|string|max:10',
             'logo'     => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+            'address'  => 'nullable|string|max:255',
+            'contact'  => 'nullable|string|max:255',
         ], [
             'name.required'     => 'Nama kelurahan wajib diisi',
             'province.required' => 'Provinsi wajib diisi',
             'city.required'     => 'Kota/Kabupaten wajib diisi',
             'district.required' => 'Kecamatan wajib diisi',
             'pos_code.required' => 'Kode pos wajib diisi',
+            'address.required'  => 'Alamat wajib diisi',
+            'contact.required'  => 'Kontak wajib diisi',
             'logo.image'        => 'Logo harus berupa gambar',
             'logo.max'          => 'Ukuran logo maksimal 2MB',
         ]);
 
         try {
-            $data = $request->only(['name', 'province', 'city', 'district', 'pos_code']);
+            $data = $request->only(['name', 'province', 'city', 'district', 'pos_code', 'address', 'contact']);
 
             // Handle logo upload
             $logoFile = $request->file('logo');
@@ -107,6 +113,8 @@ class LurahConfigController extends Controller
                     'city'     => $config->city,
                     'district' => $config->district,
                     'pos_code' => $config->pos_code,
+                    'address'  => $config->address,
+                    'contact'  => $config->contact,
                     'logo'     => $config->logo
                         ? Storage::url($config->logo)
                         : null,
